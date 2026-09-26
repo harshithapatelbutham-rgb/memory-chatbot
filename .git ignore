@@ -1,1 +1,38 @@
-.venv
+import ollama
+
+#Get name from user
+name = input("Enter your name:")
+#Get branch from user
+branch = input("enter you branch:")
+#print message - eg. Hi Jayce from CSE
+print(f"hi {name} from {branch}")
+
+SYSTEM = '''
+You explain programming error message to a 2nd year engeering student. Reply in 3 parts.
+1) What it means in plain English.
+2) The likely cause
+3) How to fix
+Keep it under 120 words
+'''
+
+while True:
+    data = input("Enter the error message or exit to stop:").strip()
+    if not data :
+        print("Enter an error:")
+    elif data.lower() == "exit" :
+        break
+    else:
+        try:
+            response= ollama.chat (model="gemma3:1b",messages=[
+           {
+                 "role":"system",
+                 "content":SYSTEM
+           },
+           {
+                 "role":"user",
+                 "content":data
+           }
+        ])
+            print(response.message.content) 
+        except Exception as e:
+            print(f"Could not reach the model {e}")
